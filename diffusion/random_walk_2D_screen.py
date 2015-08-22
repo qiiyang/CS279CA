@@ -25,10 +25,7 @@ class RWLatticeOnScreen:
         self.interval = interval    # interval between steps in ms
         self.size = size    # positive size for periodic boundries. 0 if infinite   
         self.initial_size = initial_size    # the initial size of the box, ignored for non-zero size
-        
-    def init_frame(self):
-        return self.lines
-        
+                
     def xy_gen(self):
         self.x = 0
         self.y = 0
