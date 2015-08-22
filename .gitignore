@@ -1,0 +1,15 @@
+######
+# No .pyc
+*.pyc
+
+# No backup  files
+*.*~
+*.bak
+*.old
+
+# No images and movies
+*.png
+*.mp4
+
+# No python cache
+__pycache__
