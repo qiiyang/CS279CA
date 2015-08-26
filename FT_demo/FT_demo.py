@@ -79,23 +79,28 @@ class FTDemo:
         self.button_save = ttk.Button(self.frame2, text="save data", command=self.save_data, state=tk.DISABLED)
         self.button_save.pack(side=tk.RIGHT, padx=30)    
         
-        self.graphframe1 = ttk.LabelFrame(self.mainframe, text="Fourier Transform")
-        self.graphframe1.pack(side=tk.TOP, fill=tk.X)    
+        self.graphframe = ttk.Frame(self.mainframe)
+        self.graphframe.pack(side=tk.TOP, fill=tk.X) 
         
-        self.graphframe2 = ttk.LabelFrame(self.mainframe, text="Inverse Fourier Transform")
-        self.graphframe2.pack(side=tk.TOP, fill=tk.X)    
+        self.fxLabel = ttk.LabelFrame(self.graphframe, text="Original Function")
+        self.fxLabel.grid(column=1, row=1)
+        self.fxframe = FigureFrame(self.fxLabel)
+        self.fxframe.frame.pack()
         
-        self.fxframe = FigureFrame(self.graphframe1)
-        self.fxframe.frame.grid(column=1, row=1)
+        self.fkLabel = ttk.LabelFrame(self.graphframe, text="Fourier Transform")
+        self.fkLabel.grid(column=2, row=1)
+        self.fkframe = FigureFrame(self.fkLabel)
+        self.fkframe.frame.pack()
         
-        self.fkframe = FigureFrame(self.graphframe1)
-        self.fkframe.frame.grid(column=2, row=1)  
+        self.fkLabel2 = ttk.LabelFrame(self.graphframe, text="Fourier Components to Use for Reconstruction")
+        self.fkLabel2.grid(column=1, row=2)
+        self.fkframe2 = FigureFrame(self.fkLabel2)
+        self.fkframe2.frame.pack()
         
-        self.fkframe2 = FigureFrame(self.graphframe2)
-        self.fkframe2.frame.grid(column=1, row=1)
-        
-        self.fxframe2 = FigureFrame(self.graphframe2)
-        self.fxframe2.frame.grid(column=2, row=1)  
+        self.fxLabel2 = ttk.LabelFrame(self.graphframe, text="Reconstructed Function")
+        self.fxLabel2.grid(column=2, row=2)
+        self.fxframe2 = FigureFrame(self.fxLabel2)
+        self.fxframe2.frame.pack() 
 
         self.mainCanvas.config(width=self.mainframe.winfo_reqwidth(), height=self.mainframe.winfo_reqheight(), scrollregion = (0, 0, self.mainframe.winfo_reqwidth(), self.mainframe.winfo_reqheight()))
         #self.mainCanvas.config(scrollregion = (0, 0, 10000, 10000))
@@ -125,20 +130,28 @@ class FTDemo:
         self.fk = np.fft.fft(self.fx)
         
         self.N = n // 2
-        self.xs = np.arange(self.fx.shape[-1])
+        self.xs = np.arange(self.size)
+        self.xs_oversampled = np.arange(self.size*10)/10. # oversampled x's
         self.ks = np.fft.fftfreq(self.fx.shape[-1])
         self.korder = [x % n for x in (self.xs - self.N)]   # the order to plot k-components
-        print(self.korder)
+        #print(self.korder)
+        
+        ymax = np.nanmax(self.fx)
+        ymin = np.nanmin(self.fx)
+        self.y1 = ymin - 0.1 * (ymax-ymin)
+        self.y2 = ymax + 0.1 * (ymax-ymin)
         
         self.fxframe.figure.clear()
         self.fxframe.figure.plot(self.xs, self.fx, "b-")
         self.fxframe.figure.set_xlabel("x")
         self.fxframe.figure.set_ylabel("f(x)")
+        self.fxframe.figure.set_ylim(self.y1, self.y2)
+        self.fxframe.figure.set_xlim(0, self.size-1)
         self.fxframe.canvas.show()
         
         self.fkframe.figure.clear()
-        self.fkframe.figure.plot(self.ks[self.korder], self.fk.real[self.korder], "r-", label="Re")
-        self.fkframe.figure.plot(self.ks[self.korder], self.fk.imag[self.korder], "g-", label="Im")
+        self.fkframe.figure.plot(self.ks[self.korder], self.fk.real[self.korder], "r-", label="Real")
+        self.fkframe.figure.plot(self.ks[self.korder], self.fk.imag[self.korder], "g-", label="Imag.")
         self.fkframe.figure.set_xlabel("k")
         self.fkframe.figure.set_ylabel("c(k)")
         self.fkframe.figure.legend()
@@ -175,9 +188,9 @@ class FTDemo:
             self.fk2[i] = 0.
         self.fx2 = np.fft.ifft(self.fk2).real
         if self.sum_to == 0:
-            self.singlek = self.xs*0. + 1./self.size * self.fk[0]
+            self.singlek = self.xs_oversampled*0. + 1./self.size * self.fk[0]
         else:
-            self.singlek = 1./self.size * (self.fk[self.sum_to] * np.exp(2.j*np.pi*self.k*np.arange(self.size)) + self.fk[self.size - self.sum_to] * np.exp(-2.j*np.pi*self.k*np.arange(self.size)))
+            self.singlek = 1./self.size * (self.fk[self.sum_to] * np.exp(2.j*np.pi*self.k*self.xs_oversampled) + self.fk[self.size - self.sum_to] * np.exp(-2.j*np.pi*self.k*self.xs_oversampled))
     
     def show_ift(self):
         self.update()
@@ -185,11 +198,12 @@ class FTDemo:
         self.fxframe2.figure.plot(self.xs, self.fx2, "b-")
         self.fxframe2.figure.set_xlabel("x")
         self.fxframe2.figure.set_ylabel("f(x)")
+        self.fxframe2.figure.set_ylim(self.y1, self.y2)
         self.fxframe2.canvas.show()
         
         self.fkframe2.figure.clear()
-        self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.real[self.korder], "r-", label="Re")
-        self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.imag[self.korder], "g-", label="Im")
+        self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.real[self.korder], "r-", label="Real")
+        self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.imag[self.korder], "g-", label="Imag.")
         self.fkframe2.figure.set_xlabel("k")
         self.fkframe2.figure.set_ylabel("c(k)")
         self.fkframe2.figure.legend()
@@ -198,7 +212,7 @@ class FTDemo:
     def show_singlek(self):
         self.update()
         self.fxframe2.figure.clear()
-        self.fxframe2.figure.plot(self.xs, self.singlek.real, "b-")
+        self.fxframe2.figure.plot(self.xs_oversampled, self.singlek.real, "b-")
         self.fxframe2.figure.set_xlabel("x")
         self.fxframe2.figure.set_ylabel("f(x)")
         if self.sum_to == 0:
@@ -208,9 +222,19 @@ class FTDemo:
             a = 2./self.size * np.absolute(self.fk[self.sum_to])
             phi = np.angle(self.fk[self.sum_to], deg=False)
             self.fxframe2.figure.set_title("f(x) = {0:.2}cos(2pi{1:.2}x{2:+.2})".format(a, self.k, phi))
+        self.fxframe2.figure.set_xlim(0, self.size-1)
         self.fxframe2.canvas.show()
         
         self.fkframe2.figure.clear()
+        for i in range(self.sum_to):
+            self.fk2[i] = 0.
+        for i in range(self.size-self.sum_to+1, self.size):
+            self.fk2[i] = 0.
+        self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.real[self.korder], "r-", label="Real")
+        self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.imag[self.korder], "g-", label="Imag.")
+        self.fkframe2.figure.set_xlabel("k")
+        self.fkframe2.figure.set_ylabel("c(k)")
+        self.fkframe2.figure.legend()
         self.fkframe2.canvas.show()
     
 
