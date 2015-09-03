@@ -142,7 +142,7 @@ class FTDemo:
         self.y2 = ymax + 0.1 * (ymax-ymin)
         
         self.fxframe.figure.clear()
-        self.fxframe.figure.stem(self.xs, self.fx, linefmt="b-", markerfmt="b.", basefmt="k-",)
+        self.fxframe.figure.plot(self.xs, self.fx, "b.",)
         self.fxframe.figure.set_xlabel("x")
         self.fxframe.figure.set_ylabel("f(x)")
         self.fxframe.figure.set_ylim(self.y1, self.y2)
@@ -150,8 +150,8 @@ class FTDemo:
         self.fxframe.canvas.show()
         
         self.fkframe.figure.clear()
-        self.fkframe.figure.stem(self.ks[self.korder], self.fk.real[self.korder], linefmt="r-", markerfmt="r.", basefmt="k-", label="Real")
-        self.fkframe.figure.stem(self.ks[self.korder], self.fk.imag[self.korder], linefmt="g-", markerfmt="g.", basefmt="k-", label="Imag.")
+        self.fkframe.figure.plot(self.ks[self.korder], self.fk.real[self.korder], "r.", label="Real")
+        self.fkframe.figure.plot(self.ks[self.korder], self.fk.imag[self.korder], "g.", label="Imag.")
         self.fkframe.figure.set_xlabel("k")
         self.fkframe.figure.set_ylabel("c(k)")
         self.fkframe.figure.legend()
