@@ -42,16 +42,34 @@ def ex1():
     plot_img(plain_salt)
     
 def ex2gauss():
-    test = plt.imread("2.test.png")
+    test = plt.imread("test.png")
     plot_img(test)
-    test_gauss = add_gaussian_noise(test, 0.1)
-    plot_img(test_gauss)
-    test_gauss = ndimage.gaussian_filter(test_gauss, 1)
-    plot_img(test_gauss)
+    test_noise = add_gaussian_noise(test, 0.1)
+    plot_img(test_noise)
+    t1 = ndimage.uniform_filter(test_noise, size=3)
+    plot_img(t1)
+    t1 = ndimage.gaussian_filter(test_noise, sigma=1)
+    plot_img(t1)
+    t1 = ndimage.median_filter(test_noise, size=3)
+    plot_img(t1)
+    
+    
+def ex2salt():
+    test = plt.imread("test.png")
+    plot_img(test)
+    test_noise = add_saltpepper_noise(test, 0.05)
+    plot_img(test_noise)
+    t1 = ndimage.uniform_filter(test_noise, size=3)
+    plot_img(t1)
+    t1 = ndimage.gaussian_filter(test_noise, sigma=1)
+    plot_img(t1)
+    t1 = ndimage.median_filter(test_noise, size=3)
+    plot_img(t1)
     
 if __name__ == '__main__':
-    random.seed()
+    random.seed(20150909)
     #ex1()
-    ex2()
+    #ex2gauss()
+    ex2salt()
     
     
