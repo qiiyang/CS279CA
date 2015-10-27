@@ -127,26 +127,30 @@ class FTDemo:
             self.fx = self.fx[0:n]
         
         self.size = n
-        self.fk = np.fft.fft(self.fx)
+        self.fk = np.fft.fft(np.fft.ifftshift(self.fx))
         
         self.N = n // 2
-        self.xs = np.arange(self.size)
-        self.xs_oversampled = np.arange(self.size*10)/10. # oversampled x's
+        self.xs = np.arange(self.size) - self.N
+        self.xs_oversampled = np.arange(self.size*10) / 10. - self.N # oversampled x's
         self.ks = np.fft.fftfreq(self.fx.shape[-1])
-        self.korder = [x % n for x in (self.xs - self.N)]   # the order to plot k-components
+        self.korder = np.fft.fftshift(np.arange(self.size))   # the order to plot k-components
         #print(self.korder)
         
         ymax = np.nanmax(self.fx)
         ymin = np.nanmin(self.fx)
-        self.y1 = ymin - 0.1 * (ymax-ymin)
-        self.y2 = ymax + 0.1 * (ymax-ymin)
+        ymax = 1.1 * np.nanmax([ymax, -ymin])
+        self.ylim = (-ymax, ymax)
+        
+        ymax = np.nanmax([self.fk.real, self.fk.imag])
+        ymin = np.nanmin([self.fk.real, self.fk.imag])
+        self.fklim = (ymin * 1.1, ymax * 1.1)
         
         self.fxframe.figure.clear()
         self.fxframe.figure.plot(self.xs, self.fx, "b.",)
         self.fxframe.figure.set_xlabel("x")
         self.fxframe.figure.set_ylabel("f(x)")
-        self.fxframe.figure.set_ylim(self.y1, self.y2)
-        self.fxframe.figure.set_xlim(0, self.size-1)
+        self.fxframe.figure.set_ylim(self.ylim)
+        self.fxframe.figure.set_xlim(self.xs[0], self.xs[-1])
         self.fxframe.canvas.show()
         
         self.fkframe.figure.clear()
@@ -154,6 +158,8 @@ class FTDemo:
         self.fkframe.figure.plot(self.ks[self.korder], self.fk.imag[self.korder], "g.", label="Imag.")
         self.fkframe.figure.set_xlabel("k")
         self.fkframe.figure.set_ylabel("c(k)")
+        self.fkframe.figure.set_xlim(-0.5, 0.5)
+        self.fkframe.figure.set_ylim(self.fklim)
         self.fkframe.figure.legend()
         self.fkframe.canvas.show()
         
@@ -186,7 +192,8 @@ class FTDemo:
         self.fk2 = self.fk.copy()
         for i in range(self.sum_to + 1, self.size-self.sum_to):
             self.fk2[i] = 0.
-        self.fx2 = np.fft.ifft(self.fk2).real
+        self.fx2 = np.fft.fftshift(np.fft.ifft(self.fk2).real)
+        self.fx2 = np.fft.fftshift(np.fft.ifft(self.fk2).real)
         if self.sum_to == 0:
             self.singlek = self.xs_oversampled*0. + 1./self.size * self.fk[0]
         else:
@@ -198,7 +205,8 @@ class FTDemo:
         self.fxframe2.figure.plot(self.xs, self.fx2, "b.")
         self.fxframe2.figure.set_xlabel("x")
         self.fxframe2.figure.set_ylabel("f(x)")
-        self.fxframe2.figure.set_ylim(self.y1, self.y2)
+        self.fxframe2.figure.set_xlim(self.xs[0], self.xs[-1])
+        self.fxframe2.figure.set_ylim(self.ylim)
         self.fxframe2.canvas.show()
         
         self.fkframe2.figure.clear()
@@ -206,6 +214,8 @@ class FTDemo:
         self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.imag[self.korder], "g.", label="Imag.")
         self.fkframe2.figure.set_xlabel("k")
         self.fkframe2.figure.set_ylabel("c(k)")
+        self.fkframe2.figure.set_xlim(-0.5, 0.5)
+        self.fkframe2.figure.set_ylim(self.fklim)
         self.fkframe2.figure.legend()
         self.fkframe2.canvas.show()
         
@@ -215,14 +225,15 @@ class FTDemo:
         self.fxframe2.figure.plot(self.xs_oversampled, self.singlek.real, "b-")
         self.fxframe2.figure.set_xlabel("x")
         self.fxframe2.figure.set_ylabel("f(x)")
+        self.fxframe2.figure.set_xlim(self.xs_oversampled[0], self.xs_oversampled[-1])
+        self.fxframe2.figure.set_ylim(self.ylim)
         if self.sum_to == 0:
-            a = 2./self.size * np.absolute(self.fk[0])
+            a = 1./self.size * self.fk[0].real
             self.fxframe2.figure.set_title("f(x) = {0:.2}".format(a))
         else:
             a = 2./self.size * np.absolute(self.fk[self.sum_to])
             phi = np.angle(self.fk[self.sum_to], deg=False)
-            self.fxframe2.figure.set_title("f(x) = {0:.2}cos(2pi{1:.2}x{2:+.2})".format(a, self.k, phi))
-        self.fxframe2.figure.set_xlim(0, self.size-1)
+            self.fxframe2.figure.set_title("f(x) = {0:.2}cos(2pi*{1:.1}x{2:+.2})".format(a, self.k, phi))
         self.fxframe2.canvas.show()
         
         self.fkframe2.figure.clear()
@@ -234,6 +245,8 @@ class FTDemo:
         self.fkframe2.figure.plot(self.ks[self.korder], self.fk2.imag[self.korder], "g.", label="Imag.")
         self.fkframe2.figure.set_xlabel("k")
         self.fkframe2.figure.set_ylabel("c(k)")
+        self.fkframe2.figure.set_xlim(-0.5, 0.5)
+        self.fkframe2.figure.set_ylim(self.fklim)
         self.fkframe2.figure.legend()
         self.fkframe2.canvas.show()
     

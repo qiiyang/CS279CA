@@ -16,16 +16,16 @@ def cone():
         a[500+i] = np.cos(i / 60. * np.pi)
     return a
     
-def plot_f(f, style="dots", ylabel="y", title="", xlim=50.):
+def plot_f(f, style="dots", color="b", ylabel="y", title="", xlim=50.):
     plt.xlabel("x")
     plt.ylabel(ylabel)
     plt.title(title)
     plt.xlim(-xlim, xlim)
     xs = np.arange(1000) - 500.
     if style == "dots":
-        plt.plot(xs, f, "b.")
+        plt.plot(xs, f, color+".")
     elif style == "stem":
-        plt.stem(xs, f, markerfmt="bo", linefmt="b--", basefmt="k-")
+        plt.stem(xs, f, markerfmt=color+"o", linefmt=color+"--", basefmt="k-")
     plt.show()
     
 def plot_overlap():
@@ -33,7 +33,6 @@ def plot_overlap():
     g = cone()
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title("g(x) spreading around each pixels of f(x)")
     plt.xlim(-50, 50)
     xs = np.arange(1000) - 500.
     plt.plot(xs-20., g, "b.")
@@ -49,15 +48,14 @@ def plot_convolution():
 
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title("g(x) convolves with f(x)")
     plt.xlim(-50, 50)
     xs = np.arange(1000) - 500.
-    plt.plot(xs, conv, "b.")
+    plt.plot(xs, conv, "g.")
     plt.show()
     
 if __name__ == '__main__':
-    #plot_f(two_spikes(), style="stem", title="f(x)")  # Plot the two spikes
-    #plot_f(cone(), title="g(x)")   # Plot the cone
-    #plot_overlap()
+    plot_f(two_spikes(), style="stem", color="r")  # Plot the two spikes
+    plot_f(cone())   # Plot the cone
+    plot_overlap()
     plot_convolution()
     

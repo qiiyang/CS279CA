@@ -41,7 +41,7 @@ def plot_convolution(f, g, fmt="b-", ylabel="y", title="", xlim=PLOT_LIM, ylims=
     plt.show()
     
 if __name__ == '__main__':
-    #plot_f(two_steps(), fmt="b-", title="f(x)", ylims=(-0.3, 2.3))
-    #plot_f(gaussian(sigma=20.), title="g(x)")
-    plot_convolution(two_steps(), gaussian(20.), title="f convolves with g", ylims=(-0.3, 2.3))
+    plot_f(two_steps(), fmt="b-", ylims=(-0.3, 2.3))
+    plot_f(gaussian(sigma=20.))
+    plot_convolution(two_steps(), gaussian(20.), ylims=(-0.3, 2.3))
     

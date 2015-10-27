@@ -30,9 +30,9 @@ def plot_2d(fs, title="", xlim=PLOT_LIM):
     
 if __name__ == '__main__':
     original = plt.imread("cross.png")
-    #plot_2d(original, "f(x,y)")
+    plot_2d(original)
     gaus = gaussian_kernel(10.)
-    #plot_2d(gaus, "g(x,y)")
+    plot_2d(gaus)
     conv = ndimage.gaussian_filter(original, sigma=10.)
-    plot_2d(conv, "f convolves with g")
+    plot_2d(conv)
     

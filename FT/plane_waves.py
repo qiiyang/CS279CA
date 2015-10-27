@@ -12,7 +12,7 @@ def plane_wave(kx, ky, N):
         for y in range(N):
             xs[x, y] = x
             ys[x, y] = y
-            fs[x, y] = np.sin(2.*np.pi*kx*x + 2.*np.pi*ky*y)
+            fs[x, y] = np.cos(2.*np.pi*kx*x + 2.*np.pi*ky*y)
     return (xs, ys, fs)
     
 def wireframe(kx, ky, N, rstride=1, cstride=1):
@@ -48,9 +48,9 @@ def colormap(kx, ky, N, cmap='Greys'):
     
 
 if __name__ == '__main__':
-    wireframe(0.01, 0.02, 200, rstride=10, cstride=10)
+    #wireframe(0.01, 0.02, 200, rstride=10, cstride=10)
     #surface(0.01, 0.02, 200, rstride=10, cstride=10)
-    #colormap(0.01, 0.02, 200)
+    colormap(0.01, 0.02, 200)
     
 
 
