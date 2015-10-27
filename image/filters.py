@@ -66,10 +66,16 @@ def ex2salt():
     t1 = ndimage.median_filter(test_noise, size=3)
     plot_img(t1)
     
+def ex2edge():
+    test = plt.imread("test.png")
+    t1 = test - ndimage.gaussian_filter(test, sigma=2)
+    plot_img(t1)
+    
+    
 if __name__ == '__main__':
     random.seed(20150909)
     #ex1()
     #ex2gauss()
-    ex2salt()
-    
+    #ex2salt()
+    ex2edge()
     
