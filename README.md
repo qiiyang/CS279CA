@@ -3,5 +3,21 @@
 Python codes used for demonstrating a variety of concepts to the CS 279 class.
 
 
-Fourier transform and inverse Fourier transform:
-![He-3 Demo](https://github.com/qiiyang/elflab/blob/master/examples/001He3Demo.png)
+**Fourier transform and inverse Fourier transform:**
+FT/*.py
+![FT demo](https://github.com/qiiyang/CS279CA/blob/master/readme/ft.png)
+
+
+**Convolution:**
+convolution/*.py
+![convolution demo](https://github.com/qiiyang/CS279CA/blob/master/readme/convolution.gif)
+
+
+**Noise types and image filtering:**
+image/*.py
+![image demo](https://github.com/qiiyang/CS279CA/blob/master/readme/noise.gif)
+
+
+**Random walk and diffusion:**
+diffusion/*.py
+![image demo](https://github.com/qiiyang/CS279CA/blob/master/readme/diffusion.png)
