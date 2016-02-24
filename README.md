@@ -10,7 +10,7 @@ FT/*.py
 
 **Convolution:**
 convolution/*.py
-![convolution demo](https://github.com/qiiyang/CS279CA/blob/master/readme/convolution.gif)
+![convolution demo](https://github.com/qiiyang/CS279CA/blob/master/readme/convolution.png)
 
 
 **Noise types and image filtering:**
