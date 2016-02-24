@@ -23,7 +23,7 @@ def add_saltpepper_noise(img, prob, extremals=[0., 1.]):
                 a[x,y] = random.choice(extremals)
     return a
 
-def plot_img(img, vmin=0, vmax=1.):
+def plot_img(img, vmin=None, vmax=None):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     implot = ax.imshow(img, origin='lower', interpolation="none", vmin=vmin, vmax=vmax)
@@ -68,7 +68,10 @@ def ex2salt():
     
 def ex2edge():
     test = plt.imread("test.png")
-    t1 = test - ndimage.gaussian_filter(test, sigma=2)
+    plot_img(test)
+    gaus = ndimage.gaussian_filter(test, sigma=2)
+    plot_img(gaus)
+    t1 = test - gaus
     plot_img(t1)
     
     
