@@ -9,8 +9,7 @@
 *.bak
 *.old
 
-# No images and movies
-*.png
+# No movies
 *.mp4
 
 # No python cache
